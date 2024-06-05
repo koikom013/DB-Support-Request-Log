@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Submission</title>
+</head>
+<body>
+    <form id="myForm" onsubmit="handleSubmit(event)">
+        <input name="Reference Number" type="text" placeholder="Reference Number" required>
+        <input name="Requester Name" type="text" placeholder="Requester Name" required>
+        <input name="Request Details" type="text" placeholder="Request Details" required>
+        <button type="submit">Send</button>
+    </form>
+    <div id="responseMessage"></div>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            const form = document.getElementById("myForm");
+            const formData = new FormData(form);
+
+            fetch('https://script.google.com/macros/s/AKfycbyU5v3zLb8xj7vZYk2B6ZYS1zNu0CP40PB0tUjIjdwyuQfIw6IHYC3Y5mkgYDIlkFcU/exec', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                form.reset();
+                const message = data.result === 'success' ? 'Form submitted successfully!' : 'Failed to submit form.';
+                document.getElementById("responseMessage").innerText = message;
+            })
+            .catch(error => {
+                document.getElementById("responseMessage").innerText = 'Failed to submit form.';
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
